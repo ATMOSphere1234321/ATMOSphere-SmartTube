@@ -56,22 +56,66 @@ keyPassword=android
 EOF
 fi
 
-# Point the Android SDK / Java toolchain used by the gradle wrapper at
-# the prebuilts shipped with AOSP so the build works on a clean
-# checkout that has the AOSP source tree but no separate Android SDK
-# install. Developers with their own SDK can override by exporting
-# ANDROID_SDK_ROOT / JAVA_HOME before invoking this script.
-export JAVA_HOME="${JAVA_HOME:-$PARENT_ROOT/prebuilts/jdk/jdk21/linux-x86}"
-if [ ! -d "$JAVA_HOME" ]; then
-    echo "[ATMOSphere-SmartTube] WARNING: JAVA_HOME=$JAVA_HOME not found — falling back to system java"
+# Resolve JAVA_HOME carefully. SmartTube upstream pins gradle 7.5
+# which was released before Java 21 support — running it under Java 21
+# fails during Groovy semantic analysis with
+# "Unsupported class file major version 65". Gradle 7.5 needs Java 8..17.
+#
+# Preference order (first that exists wins):
+#   1. User-provided JAVA_HOME if it already points at a JDK ≤ 17.
+#   2. AOSP prebuilt jdk17 (any known linux-x86 path variant).
+#   3. System java-17-openjdk.
+#   4. /usr/lib/jvm/jre-17-openjdk (some distros install JRE-only).
+#   5. Fallback: /usr/bin/java via unset JAVA_HOME with a warning (build
+#      may fail but at least we surface the issue instead of silently
+#      using an incompatible JDK).
+_pick_jdk17() {
+    # If JAVA_HOME is already a 17 JDK, keep it.
+    if [ -n "${JAVA_HOME:-}" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+        _v=$("$JAVA_HOME/bin/java" -version 2>&1 | head -1)
+        case "$_v" in
+            *'"17'*|*'"11'*|*'"1.8'*|*'"8'*)
+                return 0 ;;
+        esac
+    fi
+    for cand in \
+        "$PARENT_ROOT/prebuilts/jdk/jdk17/linux-x86" \
+        "$PARENT_ROOT/prebuilts/jdk/jdk17" \
+        /usr/lib/jvm/java-17-openjdk \
+        /usr/lib/jvm/java-17-openjdk-*.x86_64 \
+        /usr/lib/jvm/jre-17-openjdk \
+        /usr/lib/jvm/jre-17-openjdk-*.x86_64; do
+        # Resolve glob if any entry is literal (shell matches the first
+        # real path) or skip if no match.
+        for actual in $cand; do
+            if [ -x "$actual/bin/java" ]; then
+                export JAVA_HOME="$actual"
+                return 0
+            fi
+        done
+    done
+    echo "[ATMOSphere-SmartTube] WARNING: no JDK 17 found — gradle 7.5 will fail on Java ≥ 18"
     unset JAVA_HOME
+    return 1
+}
+_pick_jdk17 || true
+if [ -n "${JAVA_HOME:-}" ]; then
+    echo "[ATMOSphere-SmartTube] JAVA_HOME=$JAVA_HOME"
+    "$JAVA_HOME/bin/java" -version 2>&1 | head -1
 fi
 
 # Guard against network-hostile CI: Gradle will try to download
 # ~1.5 GB of artifacts on first run. Developers should run this once
 # with network; CI caches ~/.gradle between runs.
+# Ensure the gradle wrappers (main + nested submodules) are executable.
+# Git submodule clones may land without the +x bit (depends on the
+# developer's clone settings + whether umask stripped it).
+for gw in ./gradlew SharedModules/gradlew MediaServiceCore/gradlew; do
+    [ -f "$gw" ] && chmod +x "$gw" 2>/dev/null || true
+done
+
 echo "[ATMOSphere-SmartTube] running: ./gradlew :smarttubetv:assembleStstableRelease"
-./gradlew :smarttubetv:assembleStstableRelease --no-daemon --console=plain
+bash ./gradlew :smarttubetv:assembleStstableRelease --no-daemon --console=plain
 
 # Find the built APK. Gradle names it with a variant suffix; the
 # exact file name varies across Android Gradle Plugin versions so
