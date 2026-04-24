@@ -74,6 +74,21 @@ public class SubtitleManager implements TextOutput, OnDataChange {
         if (mSubtitleView != null) {
             mSubtitleView.setCues(forceCenterAlignment(cues));
         }
+        // ATMOSphere QA 26.04.02 — when the Android 15 framework has
+        // routed this decoder to the secondary display, forward cues to
+        // VideoOutputManagerService so Presenter renders them on the TV
+        // too. Safe no-op when routing isn't active or when we're
+        // running on stock Android (framework stub class absent).
+        if (mContext != null) {
+            try {
+                AtmosphereSubtitleForwarder.forwardCues(
+                        mContext.getPackageName(), cues);
+            } catch (Throwable ignored) {
+                // Forwarder handles its own errors + caches unavailability;
+                // this catch exists only to ensure the local render path
+                // above is never skipped by a forwarder failure.
+            }
+        }
     }
 
     public void show(boolean show) {
