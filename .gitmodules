@@ -1,6 +1,8 @@
 [submodule "SharedModules"]
 	path = SharedModules
-	url = https://github.com/yuliskov/SharedModules
+	url = git@github.com:ATMOSphere1234321/ATMOSphere-SmartTube-SharedModules.git
+	branch = main
 [submodule "MediaServiceCore"]
 	path = MediaServiceCore
-	url = https://github.com/yuliskov/MediaServiceCore
+	url = git@github.com:ATMOSphere1234321/ATMOSphere-SmartTube-MediaServiceCore.git
+	branch = main
