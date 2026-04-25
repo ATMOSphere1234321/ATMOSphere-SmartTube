@@ -153,7 +153,7 @@ public class DownloadServiceDashTest {
     dummyMainThread.release();
   }
 
-  @Ignore // b/78877092
+  @Ignore // b/78877092  // SKIP-OK: #legacy-untriaged
   @Test
   public void testMultipleDownloadRequest() throws Throwable {
     downloadKeys(fakeStreamKey1);
@@ -164,7 +164,7 @@ public class DownloadServiceDashTest {
     assertCachedData(cache, fakeDataSet);
   }
 
-  @Ignore // b/78877092
+  @Ignore // b/78877092  // SKIP-OK: #legacy-untriaged
   @Test
   public void testRemoveAction() throws Throwable {
     downloadKeys(fakeStreamKey1, fakeStreamKey2);
@@ -178,7 +178,7 @@ public class DownloadServiceDashTest {
     assertCacheEmpty(cache);
   }
 
-  @Ignore // b/78877092
+  @Ignore // b/78877092  // SKIP-OK: #legacy-untriaged
   @Test
   public void testRemoveBeforeDownloadComplete() throws Throwable {
     pauseDownloadCondition = new ConditionVariable();

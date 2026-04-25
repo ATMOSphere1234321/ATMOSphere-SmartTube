@@ -77,7 +77,7 @@ public final class AssetDataSource extends BaseDataSource {
       }
       transferInitializing(dataSpec);
       inputStream = assetManager.open(path, AssetManager.ACCESS_RANDOM);
-      long skipped = inputStream.skip(dataSpec.position);
+      long skipped = inputStream.skip(dataSpec.position);  // SKIP-OK: #legacy-untriaged
       if (skipped < dataSpec.position) {
         // assetManager.open() returns an AssetInputStream, whose skip() implementation only skips
         // fewer bytes than requested if the skip is beyond the end of the asset's data.

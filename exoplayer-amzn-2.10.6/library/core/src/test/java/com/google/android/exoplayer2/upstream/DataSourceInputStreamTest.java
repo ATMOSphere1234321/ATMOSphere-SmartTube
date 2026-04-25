@@ -80,7 +80,7 @@ public final class DataSourceInputStreamTest {
     // Skip bytes.
     long totalBytesSkipped = 0;
     while (totalBytesSkipped < TEST_DATA.length) {
-      long bytesSkipped = inputStream.skip(Long.MAX_VALUE);
+      long bytesSkipped = inputStream.skip(Long.MAX_VALUE);  // SKIP-OK: #legacy-untriaged
       assertThat(bytesSkipped > 0).isTrue();
       totalBytesSkipped += bytesSkipped;
       assertThat(inputStream.bytesRead()).isEqualTo(totalBytesSkipped);

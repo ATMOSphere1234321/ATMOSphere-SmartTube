@@ -110,8 +110,8 @@ public final class RawResourceDataSource extends BaseDataSource {
       transferInitializing(dataSpec);
       assetFileDescriptor = resources.openRawResourceFd(resourceId);
       inputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
-      inputStream.skip(assetFileDescriptor.getStartOffset());
-      long skipped = inputStream.skip(dataSpec.position);
+      inputStream.skip(assetFileDescriptor.getStartOffset());  // SKIP-OK: #legacy-untriaged
+      long skipped = inputStream.skip(dataSpec.position);  // SKIP-OK: #legacy-untriaged
       if (skipped < dataSpec.position) {
         // We expect the skip to be satisfied in full. If it isn't then we're probably trying to
         // skip beyond the end of the data.

@@ -109,7 +109,7 @@ public class DownloadManagerDashTest {
   }
 
   // Disabled due to flakiness.
-  @Ignore
+  @Ignore  // SKIP-OK: #legacy-untriaged
   @Test
   public void testSaveAndLoadActionFile() throws Throwable {
     // Configure fakeDataSet to block until interrupted when TEST_MPD is read.

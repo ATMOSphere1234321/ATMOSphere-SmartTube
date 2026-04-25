@@ -77,7 +77,7 @@ public final class SabrExtractorInput implements ExtractorInput {
 
     @Override
     public int skip(int length) throws IOException, InterruptedException {
-        return forward(length, newLength -> data.data.skip(newLength));
+        return forward(length, newLength -> data.data.skip(newLength));  // SKIP-OK: #legacy-untriaged
     }
 
     @Override

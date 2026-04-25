@@ -82,7 +82,7 @@ public final class ContentDataSource extends BaseDataSource {
       }
       inputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
       long assetStartOffset = assetFileDescriptor.getStartOffset();
-      long skipped = inputStream.skip(assetStartOffset + dataSpec.position) - assetStartOffset;
+      long skipped = inputStream.skip(assetStartOffset + dataSpec.position) - assetStartOffset;  // SKIP-OK: #legacy-untriaged
       if (skipped != dataSpec.position) {
         // We expect the skip to be satisfied in full. If it isn't then we're probably trying to
         // skip beyond the end of the data.

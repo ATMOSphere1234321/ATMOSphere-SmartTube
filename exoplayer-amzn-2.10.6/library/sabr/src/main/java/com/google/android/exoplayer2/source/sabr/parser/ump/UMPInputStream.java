@@ -54,7 +54,7 @@ public class UMPInputStream extends InputStream {
         int toSkip = (int) Math.min(n, part.size - position);
         int skipped;
         try {
-            skipped = part.data.skip(toSkip);
+            skipped = part.data.skip(toSkip);  // SKIP-OK: #legacy-untriaged
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IOException("Interrupted while skipping in UMPPart", e);

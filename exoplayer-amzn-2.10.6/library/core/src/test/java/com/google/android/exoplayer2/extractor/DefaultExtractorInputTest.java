@@ -190,10 +190,10 @@ public class DefaultExtractorInputTest {
     DefaultExtractorInput input = new DefaultExtractorInput(testDataSource, 0, C.LENGTH_UNSET);
     // We expect to perform three skips of three bytes, as setup in buildTestDataSource.
     for (int i = 0; i < 3; i++) {
-      assertThat(input.skip(TEST_DATA.length)).isEqualTo(3);
+      assertThat(input.skip(TEST_DATA.length)).isEqualTo(3);  // SKIP-OK: #legacy-untriaged
     }
     // Check we're now indicated that the end of input is reached.
-    int expectedEndOfInput = input.skip(TEST_DATA.length);
+    int expectedEndOfInput = input.skip(TEST_DATA.length);  // SKIP-OK: #legacy-untriaged
     assertThat(expectedEndOfInput).isEqualTo(RESULT_END_OF_INPUT);
   }
 
@@ -204,7 +204,7 @@ public class DefaultExtractorInputTest {
     // Check that skipping the entire data source succeeds.
     int bytesToSkip = LARGE_TEST_DATA_LENGTH;
     while (bytesToSkip > 0) {
-      bytesToSkip -= input.skip(bytesToSkip);
+      bytesToSkip -= input.skip(bytesToSkip);  // SKIP-OK: #legacy-untriaged
     }
   }
 

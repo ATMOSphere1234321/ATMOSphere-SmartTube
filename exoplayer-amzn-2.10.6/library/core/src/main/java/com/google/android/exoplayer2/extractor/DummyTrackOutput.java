@@ -35,7 +35,7 @@ public final class DummyTrackOutput implements TrackOutput {
   @Override
   public int sampleData(ExtractorInput input, int length, boolean allowEndOfInput)
       throws IOException, InterruptedException {
-    int bytesSkipped = input.skip(length);
+    int bytesSkipped = input.skip(length);  // SKIP-OK: #legacy-untriaged
     if (bytesSkipped == C.RESULT_END_OF_INPUT) {
       if (allowEndOfInput) {
         return C.RESULT_END_OF_INPUT;
