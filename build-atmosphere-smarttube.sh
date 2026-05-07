@@ -98,8 +98,10 @@ _pick_jdk17() {
         "$PARENT_ROOT/prebuilts/jdk/jdk17/linux-x86" \
         "$PARENT_ROOT/prebuilts/jdk/jdk17" \
         /usr/lib/jvm/java-17-openjdk \
+        /usr/lib/jvm/java-17-openjdk-amd64 \
         /usr/lib/jvm/java-17-openjdk-*.x86_64 \
         /usr/lib/jvm/jre-17-openjdk \
+        /usr/lib/jvm/jre-17-openjdk-amd64 \
         /usr/lib/jvm/jre-17-openjdk-*.x86_64; do
         # Resolve glob if any entry is literal (shell matches the first
         # real path) or skip if no match.
