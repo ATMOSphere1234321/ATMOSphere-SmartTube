@@ -19,6 +19,12 @@ local.properties
 # time, so this file never needs to be committed.
 keystore.properties
 
+# §9 zero-risk-data-safety hardlinked .git backups (always-local, never tracked)
+sm_depth2_backup_*.git.mirror
+*.git.mirror
+firebase-debug.log
+firebase-debug.*.log
+
 # Windows thumbnail db
 Thumbs.db
 
