@@ -122,6 +122,10 @@ public class ExoPlayerController implements Player.EventListener {
     }
 
     private void openMediaSource(MediaSource mediaSource) {
+        // §EW fix (User mandate 2026-05-21) — invalidate PRIMARY PlayerView SurfaceView before opening
+        // the new MediaSource. Belt-and-braces with the VideoOutputManagerService onDeactivate removal:
+        // even if a stale frame ever lands on PRIMARY (Hypothesis A/B), this call clears it.
+        mPlayer.clearVideoSurface();
         resetPlayerState(); // fixes occasional video artifacts and problems with quality switching
         setQualityInfo("");
 
