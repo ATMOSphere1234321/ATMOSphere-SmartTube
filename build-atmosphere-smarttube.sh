@@ -47,6 +47,18 @@ echo "  parent:     $PARENT_ROOT"
 # directory component relative to the module (smarttubetv/~). Use the
 # absolute path via $HOME. Create the debug keystore if it's missing
 # (fresh dev machine) using the standard password "android".
+# Self-heal a stale keystore.properties whose storeFile is absent on THIS host
+# (e.g. a copy from another machine/user with storeFile=/home/builder/...).
+# Without this, validateSigningRelease FAILs because the build only regenerated
+# keystore.properties when entirely ABSENT. The file is .gitignored ('DO NOT
+# COMMIT') so regeneration is always safe + reproducible.
+if [ -f keystore.properties ]; then
+    _KS_REF=$(sed -n 's/^storeFile=//p' keystore.properties 2>/dev/null | head -1)
+    if [ -z "$_KS_REF" ] || [ ! -f "$_KS_REF" ]; then
+        echo "[ATMOSphere-SmartTube] stale keystore.properties (storeFile '$_KS_REF' missing on this host) — regenerating"
+        rm -f keystore.properties
+    fi
+fi
 if [ ! -f keystore.properties ]; then
     _DEBUG_KS="$HOME/.android/debug.keystore"
     if [ ! -f "$_DEBUG_KS" ]; then
